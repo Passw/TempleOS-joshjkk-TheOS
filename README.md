@@ -2,7 +2,7 @@
 
 **Disclaimer: This operating system is still in very early stages of development. Please don't use this until a stable release is published.**
 
-The theos Operating System *(theOS)* is a 64-bit operating system tailored towards tinkerers who want complete control over their hardware.
+The theos Operating System *(theOS)* is an operating system tailored towards tinkerers who want complete control over their hardware.
 
 ## Installation
 
