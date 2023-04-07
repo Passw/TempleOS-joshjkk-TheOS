@@ -1,5 +1,9 @@
 # TheOS
 
+> In honour of [Terry A. Davis](https://en.wikipedia.org/wiki/Terry_A._Davis), 1969 - 2018
+
+## About
+
 **Disclaimer: This operating system is still in very early stages of development. Please don't use this until a stable release is published.**
 
 The Theos Operating System *(TheOS)* is an operating system tailored towards tinkerers who want complete control over their hardware.
