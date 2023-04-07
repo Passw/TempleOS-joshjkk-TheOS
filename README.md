@@ -1,6 +1,6 @@
 # TheOS
 
-> In honour of [Terry A. Davis](https://en.wikipedia.org/wiki/Terry_A._Davis), 1969 - 2018
+> In honor of [Terry A. Davis](https://en.wikipedia.org/wiki/Terry_A._Davis), 1969 - 2018
 
 ## About
 
