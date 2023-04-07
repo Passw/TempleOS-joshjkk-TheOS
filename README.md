@@ -1,12 +1,12 @@
-# theos
+# TheOS
 
 **Disclaimer: This operating system is still in very early stages of development. Please don't use this until a stable release is published.**
 
-The theos Operating System *(theOS)* is an operating system tailored towards tinkerers who want complete control over their hardware.
+The Theos Operating System *(TheOS)* is an operating system tailored towards tinkerers who want complete control over their hardware.
 
 ## Installation
 
-To install theos, you have to build an iso from source.
+To install TheOS, you have to build an iso from source.
 
 ### Build from source
 
@@ -52,4 +52,4 @@ Set up a new 64-bit virtual machine and keep all the settings default as they ar
 
 ## License
 
-theos is under an Apache 2.0 license. More information can be found in the [LICENSE](./LICENSE) file.
+TheOS is under an Apache 2.0 license. More information can be found in the [LICENSE](./LICENSE) file.
