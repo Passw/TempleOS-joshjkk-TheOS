@@ -37,4 +37,6 @@ void mvputc(uint8_t row, uint8_t col, char c);
 
 void mvputs(uint8_t row, uint8_t col, char *str);
 
+void mvlog(uint8_t row, uint8_t col, const char *sender, const char *status, char *msg, uint8_t fore);
+
 #endif /* STDIO_H */

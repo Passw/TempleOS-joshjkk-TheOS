@@ -1,5 +1,6 @@
 #include "include/stdio.h"
 #include "include/stdint.h"
+#include "include/string.h"
 
 typedef struct VGAChar {
     uint8_t c;
@@ -48,4 +49,21 @@ void mvputs(uint8_t row, uint8_t col, char *str) {
         i++;
         str++;
     }
+}
+
+void mvlog(uint8_t row, uint8_t col, const char *sender, const char *status, char *msg, uint8_t fore) {
+    size_t send_len = strlen((char *)sender);
+    size_t act_len = strlen((char *)status);
+
+    set_color(COLOR_WHITE, COLOR_BLACK);
+    mvputs(row, col, "[ ");
+    set_color(fore, COLOR_BLACK);
+    mvputs(row, col + 2, (char *)sender);
+    set_color(COLOR_WHITE, COLOR_BLACK);
+    mvputs(row, col + 2 + send_len, " ] ");
+    set_color(COLOR_LIGHT_GRAY, COLOR_BLACK);
+    mvputs(row, col + 5 + send_len, (char *)status);
+    set_color(COLOR_WHITE, COLOR_BLACK);
+    mvputc(row, col + 5 + send_len + act_len, ' ');
+    mvputs(row, col + 6 + send_len + act_len, msg);
 }
