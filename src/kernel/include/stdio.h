@@ -1,6 +1,8 @@
 #ifndef STDIO_H
 #define STDIO_H
 
+#include "stdint.h"
+
 #define ROWS 25
 #define COLS 80
 
@@ -23,10 +25,16 @@ enum Colors {
 	COLOR_WHITE = 15
 };
 
+void clear();
+
+void set_color(uint8_t fore, uint8_t back);
+
 void putc(char c);
 
 void puts(char *str);
 
-void clear();
+void mvputc(uint8_t row, uint8_t col, char c);
 
-#endif // STDIO_H
+void mvputs(uint8_t row, uint8_t col, char *str);
+
+#endif /* STDIO_H */
