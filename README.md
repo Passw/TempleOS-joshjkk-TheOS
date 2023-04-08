@@ -10,11 +10,11 @@ The Theos Operating System *(TheOS)* is an operating system tailored towards tin
 
 ## Installation
 
-To install TheOS, you have to build an iso from source.
+To install TheOS, you have to build an img from source.
 
 ### Build from source
 
-In order to build the iso from source, you are going to need to [install some packages](#package-managers) according to your package manager.
+In order to build the img from source, you are going to need to [install some packages](#package-managers) according to your package manager.
 
 #### Package managers
 
@@ -42,7 +42,7 @@ sudo make
 
 ## Usage
 
-After obtaining an iso, you have to run the operating system in a [virtual machine](). You can either use [QEMU](#qemu) or [VirtualBox](#virtualbox) for this.
+After obtaining an img, you have to run the operating system in a [virtual machine](). You can either use [QEMU](#qemu) or [VirtualBox](#virtualbox) for this.
 
 For testing purposes, QEMU is recommended because the startup time is much faster than VirtualBox, however I recommend using VirtualBox if you're trying to closely resemble hardware.
 
