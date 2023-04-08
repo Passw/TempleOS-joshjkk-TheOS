@@ -1,3 +1,5 @@
+<img src="./resources/preview.png" alt="preview">
+
 # TheOS
 
 > In honor of [Terry A. Davis](https://en.wikipedia.org/wiki/Terry_A._Davis), 1969 - 2018
