@@ -1,51 +1,32 @@
-ASM = nasm
-ASM_FLAGS = -f bin
-CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -ggdb -std=c99
-SRCDIR = src
-TOOLSDIR = tools
-BUILDDIR = build
+OUT = TheOS
 
-.PHONY: all floppy_image kernel bootloader clean always tools_fat
+KERNEL_SOURCES := $(shell find src/kernel -name *.c)
+KERNEL_OBJECTS := $(patsubst src/kernel/%.c, build/kernel/%.o, $(KERNEL_SOURCES))
 
-all: floppy_image tools_fat
+x86_64_C_SOURCES := $(shell find src/x86 -name *.c)
+x86_64_C_OBJECTS := $(patsubst src/x86/%.c, build/x86/%.o, $(x86_64_C_SOURCES))
+CFLAGS := -Wall -Wextra -pedantic -ggdb -std=c99 -ffreestanding
 
-#
-# Floppy image
-#
-floppy_image: $(BUILDDIR)/theos.img
-$(BUILDDIR)/theos.img: bootloader kernel
-	dd if=/dev/zero of=$(BUILDDIR)/theos.img bs=512 count=2880
-	mkfs.fat -F 12 -n "THEOS" $(BUILDDIR)/theos.img
-	dd if=$(BUILDDIR)/bootloader.bin of=$(BUILDDIR)/theos.img conv=notrunc
-	mcopy -i $(BUILDDIR)/theos.img $(BUILDDIR)/kernel.bin "::kernel.bin"
-	mcopy -i $(BUILDDIR)/theos.img test.txt "::test.txt"
+x86_64_ASM_SOURCES := $(shell find src -name *.asm)
+x86_64_ASM_OBJECTS := $(patsubst src/%.asm, build/%.o, $(x86_64_ASM_SOURCES))
 
-#
-# Bootloader
-#
-bootloader: $(BUILDDIR)/bootloader.bin
-$(BUILDDIR)/bootloader.bin: always
-	$(ASM) $(SRCDIR)/bootloader/boot.asm $(ASM_FLAGS) -o $(BUILDDIR)/bootloader.bin
+x86_64_OBJECTS := $(x86_64_C_OBJECTS) $(x86_64_ASM_OBJECTS)
 
-#
-# Kernel
-#
-kernel: $(BUILDDIR)/kernel.bin
-$(BUILDDIR)/kernel.bin: always
-	$(ASM) $(SRCDIR)/kernel/main.asm $(ASM_FLAGS) -o $(BUILDDIR)/kernel.bin
+$(KERNEL_OBJECTS): build/kernel/%.o : src/kernel/%.c
+	mkdir -p $(dir $@) && \
+	gcc -I src/x86 -c $(CFLAGS) $(patsubst build/kernel/%.o, src/kernel/%.c, $@) -o $@
 
-#
-# Tools
-#
-tools_fat: $(BUILDDIR)/tools/fat
-$(BUILDDIR)/tools/fat: always $(TOOLSDIR)/fat/fat.c $(TOOLSDIR)/fat/fat.h
-	mkdir -p $(BUILDDIR)/tools
-	$(CC) $(CFLAGS) -g -o $(BUILDDIR)/tools/fat $(TOOLSDIR)/fat/fat.c $(TOOLSDIR)/fat/fat.h
+$(x86_64_C_OBJECTS): build/%.o : src/%.c
+	mkdir -p $(dir $@) && \
+	gcc -I src/x86 -c $(CFLAGS) $(patsubst build/%.o, src/%.c, $@) -o $@
 
+$(x86_64_ASM_OBJECTS): build/%.o : src/%.asm
+	mkdir -p $(dir $@) && \
+	nasm -f elf64 $(patsubst build/%.o, src/%.asm, $@) -o $@
 
-always:
-	mkdir -p $(BUILDDIR)
-
-clean:
-	rm -rf $(BUILDDIR)/*
+.PHONY: debian
+debian: $(KERNEL_OBJECTS) $(x86_64_OBJECTS)
+	mkdir -p dist && \
+	ld -n -o dist/kernel.bin -T targets/linker.ld $(KERNEL_OBJECTS) $(x86_64_OBJECTS) && \
+	cp dist/kernel.bin targets/iso/boot/kernel.bin && \
+	grub-mkrescue /usr/lib/grub/i386-pc -o dist/$(OUT).iso targets/iso
