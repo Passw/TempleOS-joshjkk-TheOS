@@ -12,4 +12,4 @@ typedef signed long long int64_t;
 
 typedef unsigned long long int size_t;
 
-#endif // STDINT_H
+#endif /* STDINT_H */
