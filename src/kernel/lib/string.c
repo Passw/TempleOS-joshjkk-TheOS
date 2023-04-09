@@ -12,3 +12,13 @@ size_t strlen(char *str) {
     else 
         return 0;
 }
+
+char *strcpy(char *dest, const char *src)
+{
+    char *original_dest = dest;
+    while (*src) {
+        *dest++ = *src++;
+    }
+    *dest = '\0';
+    return original_dest;
+}

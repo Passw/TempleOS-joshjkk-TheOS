@@ -1,7 +1,8 @@
-#include "include/stdio.h"
-#include "include/string.h"
-#include "include/input.h"
-#include "include/graphics.h"
+#include "lib/include/stdio.h"
+#include "lib/include/stdlib.h"
+#include "lib/include/string.h"
+#include "lib/include/input.h"
+#include "lib/include/graphics.h"
 
 void refresh_console() {
     box(0, 0, ROWS, COLS);
@@ -14,6 +15,10 @@ void kernel_main() {
     set_color(COLOR_WHITE, COLOR_BLACK);
     clear();
     refresh_console();
-
     mvlog(1, 1, "KERNEL", "Welcome", "Hello from the 64-bit TheOS kernel!", COLOR_MAGENTA);
+
+    char buffer[32];
+    char hello[] = "hello";
+    sprintf(buffer, "%s", hello);
+    mvputs(4, 1, buffer);
 }
