@@ -119,6 +119,42 @@ void *malloc(size_t size) {
     return NULL;
 }
 
+void *realloc(void *ptr, size_t size) {
+    if (ptr == NULL)
+        return malloc(size);
+
+    if (size == 0) {
+        free(ptr);
+        return NULL;
+    }
+
+    memblock_t *block = (memblock_t *)ptr - 1;
+    size_t original_size = block->size;
+    if (original_size == size)
+        return ptr;
+
+    if (original_size > size) {
+        if (original_size - size >= sizeof(memblock_t) + 1) {
+            split_block(block, size);
+        }
+        return ptr;
+    }
+
+    memblock_t *next_block = (memblock_t *)((char *)block + sizeof(memblock_t) + block->size);
+    if (next_block->free && block->size + sizeof(memblock_t) + next_block->size >= size) {
+        block->size += sizeof(memblock_t) + next_block->size;
+        return ptr;
+    }
+
+    void *new_ptr = malloc(size);
+    if (new_ptr == NULL) {
+        return NULL;
+    }
+    memcpy(new_ptr, ptr, original_size);
+    free(ptr);
+    return new_ptr;
+}
+
 void free(void *ptr) {
     if (ptr == NULL)
         return;
@@ -187,3 +223,13 @@ void sprintf(char *buffer, const char *format, ...)
     va_end(args);
     *buffer = '\0';
 }
+
+void system(char *cmd) {
+    (void)cmd;
+    mvlog(1, 1, "SYSTEM", "NOT IMPLEMENTED", "Commands are not implemented yet", COLOR_RED);
+}
+
+void mvsystem(uint8_t row, uint8_t col, char *cmd) {
+    (void)cmd;
+    mvlog(row, col, "SYSTEM", "NOT IMPLEMENTED", "Commands are not implemented yet", COLOR_RED);
+}    

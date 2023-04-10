@@ -33,10 +33,16 @@ void *memset(void *ptr, int value, size_t size);
 
 void *malloc(size_t size);
 
+void *realloc(void *ptr, size_t size);
+
 void free(void *ptr);
 
 void *memcpy(void *dest, const void *src, size_t size);
 
 void sprintf(char *buffer, const char *format, ...);
+
+void system(char *cmd);
+
+void mvsystem(uint8_t row, uint8_t col, char *cmd);
 
 #endif /* STDLIB_H */
