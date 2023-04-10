@@ -5,4 +5,6 @@
 
 size_t strlen(char *str);
 
+char *strcpy(char *dest, const char *src);
+
 #endif /* STRING_H */

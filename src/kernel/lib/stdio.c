@@ -25,6 +25,12 @@ void set_color(uint8_t fore, uint8_t back) {
 }
 
 void putc(char c) {
+    if (c == '\n') {
+        g_row++;
+        return;
+    } else if (c == '\0')
+        return;
+
     vgachar_t vgac = { (uint8_t)c, g_color };
     vgabuf[g_col + COLS * g_row] = vgac; 
     g_col++;
@@ -35,11 +41,13 @@ void puts(char *str) {
         putc(*str);
         str++;
     }
+    g_row++;
 }
 
 void mvputc(uint8_t row, uint8_t col, char c) {
     vgachar_t vgac = { (uint8_t)c, g_color };
     vgabuf[col + COLS * row] = vgac; 
+    g_col++;
 }
 
 void mvputs(uint8_t row, uint8_t col, char *str) {
@@ -66,4 +74,5 @@ void mvlog(uint8_t row, uint8_t col, const char *sender, const char *status, cha
     set_color(COLOR_WHITE, COLOR_BLACK);
     mvputc(row, col + 5 + send_len + act_len, ' ');
     mvputs(row, col + 6 + send_len + act_len, msg);
+    g_row++;
 }
