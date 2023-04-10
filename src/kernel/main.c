@@ -44,7 +44,7 @@ void kernel_main() {
         size_t input_ticks = INPUT_BUF_TICKS;
         int i = 0;
         while (TRUE) {
-            sleep(INPUT_DELAY / 3);
+            sleep(INPUT_DELAY);
             char c = getchar();
 
             if (c == '\t' || c == '\b' || (int)c == 15 || (int)c == 14)
