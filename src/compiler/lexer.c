@@ -1,4 +1,5 @@
 #include "include/lexer.h"
+#include "include/token.h"
 #include "../kernel/lib/include/stdio.h"
 #include "../kernel/lib/include/stdlib.h"
 #include "../kernel/lib/include/string.h"
@@ -12,14 +13,12 @@ lexer_t *init_lexer(char *src) {
     return lexer;
 }
 
-/*
 void lexer_advance(lexer_t *lexer) {
     if (lexer->i < strlen(lexer->src) && lexer->c != '\0') {
         lexer->i++;
         lexer->c = lexer->src[lexer->i];
     }
 }
-
 
 token_t *lexer_advance_cur(lexer_t *lexer, int type) {
     char *value = (char *)malloc(2 * sizeof(char));
@@ -69,11 +68,11 @@ token_t *lexer_lex_num(lexer_t *lexer) {
     return init_token(value, TOKEN_INT);
 }
 
-char lexer_peek(lexer_t *lex, size_t offset) {
-    return lex->src[MIN(lex->i + offset, strlen(lex->src))];
+char lexer_peek(lexer_t *lexer, size_t offset) {
+    return lexer->src[lexer->i + offset];
 }
 
-token_t *lexer_next_tok(lexer_t *lexer) {
+token_t *lexer_next_token(lexer_t *lexer) {
     while (lexer->c != '\0') {
         lexer_skip_white(lexer);
 
@@ -92,24 +91,28 @@ token_t *lexer_next_tok(lexer_t *lexer) {
             case '}': return lexer_advance_cur(lexer, TOKEN_RBRACE);
             case '=':
                 if (lexer_peek(lexer, 1) == '>')
-                    return lexer_advance_with(lex, lexer_advance_with(lex, init_token("=>", TOKEN_ARROW)));
-                return lexer_advance_cur(lex, TOKEN_EQUALS);
-            case ';': return lexer_advance_cur(lex, TOKEN_SEMICOLON);
+                    return lexer_advance_with(lexer, lexer_advance_with(lexer, init_token("=>", TOKEN_ARROW)));
+                return lexer_advance_cur(lexer, TOKEN_EQUALS);
+            case ';': return lexer_advance_cur(lexer, TOKEN_SEMICOLON);
             case '\0': goto eof;
-            //default: fprintf(stderr, "[Lexer]: Unexpected token '%c'\n", lex->c); exit(1);
+            default: {
+                char msg[64];
+                sprintf(msg, "[Lexer]: Unexpected token '%c'\n", lexer->c); 
+                puts(msg);
+                goto eof;
+            }
         }
     }
 eof:
-    return init_token(0, TOK_EOF);
+    return init_token(0, TOKEN_EOF);
 }
 
 void lexer_lex(lexer_t *lexer) {
     token_t *token;
     while ((token = lexer_next_token(lexer))->type != TOKEN_EOF) {
         char *token_str = token_to_str(token);
-        printf("%s\n", token_str);
+        puts(token_str);
         free(token_str);
     }
     free(token);
 }
-*/

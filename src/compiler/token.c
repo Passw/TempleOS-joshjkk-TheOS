@@ -27,7 +27,7 @@ char *token_type_to_str(int type) {
     }
 }
 
-char *tok_to_str(token_t *token) {
+char *token_to_str(token_t *token) {
     const char *type_str = token_type_to_str(token->type);
     const char *template = "<type = '%s', int_type = '%d', value = '%s'>";
     
