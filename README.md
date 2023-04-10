@@ -12,7 +12,7 @@ The 64-bit Theos Operating System *(TheOS)* is an operating system tailored towa
 
 ## Installation
 
-To install TheOS, you can download a prebuilt iso, or build an iso from source.
+To install TheOS, you can download a [prebuilt iso](#prebuilt-iso), or [build an iso from source](#build-from-source).
 
 ### Prebuilt iso
 
@@ -20,9 +20,9 @@ You can download a prebuilt iso on any platform from the [releases](https://gith
 
 ### Build from source
 
-**Currently, you can only build for Debian:**
+**Currently, you can only build for Debian**
 
-In order to build the img from source, you are going to need to [install some packages](#package).
+In order to build the iso from source, you are going to need to [install some packages](#package).
 
 ### Packages
 
@@ -30,7 +30,7 @@ In order to build the img from source, you are going to need to [install some pa
 sudo apt install nasm xorriso grub-pc-bin grub-common mtools libisoburn-dev libburn-dev qemu qemu-system-x86 build-essential
 ```
 
-After installing the required packages, run the following command to build the iso into ```build/theos.iso```:
+After installing the required packages, run the following command to build the iso into ```build/TheOS.iso```:
 
 ``` bash
 sudo make debian
