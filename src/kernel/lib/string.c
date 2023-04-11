@@ -1,4 +1,5 @@
 #include "include/string.h"
+#include "include/stdlib.h"
 #include "include/stdint.h"
 
 size_t strlen(char *str) {
@@ -21,4 +22,16 @@ char *strcpy(char *dest, const char *src)
     }
     *dest = '\0';
     return original_dest;
+}
+
+char *strdup(const char *src) {
+    if (src == NULL)
+        return NULL;
+
+    char *dst = (char *)malloc(strlen((char *)src) + 1);
+    if (dst == NULL)
+        return NULL;
+
+    strcpy(dst, src);
+    return dst;
 }

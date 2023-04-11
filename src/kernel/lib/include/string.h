@@ -7,4 +7,6 @@ size_t strlen(char *str);
 
 char *strcpy(char *dest, const char *src);
 
+char *strdup(const char *src);
+
 #endif /* STRING_H */
