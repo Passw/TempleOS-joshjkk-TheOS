@@ -27,6 +27,7 @@ void set_color(uint8_t fore, uint8_t back) {
 void putc(char c) {
     if (c == '\n') {
         g_row++;
+        g_col = 0;
         return;
     } else if (c == '\0')
         return;
