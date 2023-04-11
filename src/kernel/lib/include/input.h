@@ -8,6 +8,12 @@
 						   * wait an amount of ticks (INPUT_DELAY * TICKS)ms to decide 
 						   * if the user actually wanted to press that key */
 
+#define CH_ESC 27
+#define CH_BACKSPACE '\b'
+#define CH_ENTER '\n'
+#define CH_TAB '\t'
+#define CH_SPACE ' '
+
 char getchar();
 
 #endif /* INPUT_H */
