@@ -6,69 +6,39 @@
 #include "lib/include/time.h"
 #include "lib/include/graphics.h"
 
-#define CMD_BUF 128
-
-uint8_t g_krow = 1;
-uint8_t g_kcol = 1;
-
-void refresh_console() {
-    box(0, 0, ROWS, COLS);
-    set_color(COLOR_BLACK, COLOR_LIGHT_GRAY);
-    mvputs(0, (COLS / 2) - (strlen("KERNEL") / 2), "KERNEL");
-    set_color(COLOR_WHITE, COLOR_BLACK);
-}
-
-void welcome() {
-    clear();
-    refresh_console();
-    mvlog(g_krow++, g_kcol, "KERNEL", "Welcome", "Welcome to the 64-bit TheOS kernel!", COLOR_MAGENTA);
-}
+extern int shift_pressed;
+extern int ctrl_pressed;
 
 void kernel_main() {
-    welcome();
-    set_color(COLOR_WHITE, COLOR_BLACK);
+    clear();
+
+    uint8_t colorscheme[8] = {
+        COLOR_WHITE, COLOR_BLACK,
+        COLOR_WHITE, COLOR_BLUE,
+        COLOR_BLACK, COLOR_LIGHT_GRAY,
+        COLOR_BLACK, COLOR_LIGHT_GRAY
+    };
+    box_t *kernel = init_box("KERNEL", 0, 0, ROWS, COLS, colorscheme, TRUE);
+    refresh_box(kernel);
+
+    char ver[] = "TheOS v0.2.0-prerelease1";
+    set_color(COLOR_MAGENTA, COLOR_LIGHT_GRAY);
+    box_addstr(kernel, 2, (kernel->cols / 2) - (strlen(ver) / 2), ver);
+
+    box_t *welcome = init_box("WELCOME", (kernel->rows / 2) - (10 / 2), (kernel->cols / 2) - (40 / 2), 10, 40, colorscheme, FALSE);
+    char welcome_msg[] = "Welcome to the 64-bit Theos Operating System. It is still in very early stages of development, so there isn't much to do right now. Despite that, I hope you're impressed, and you choose to stick around.";
+
+    refresh_box(welcome);
+
+    set_color(colorscheme[6], colorscheme[7]); // content color
+    box_addstr(welcome, 0, 0, welcome_msg);
+
+    free(welcome);
 
     while (TRUE) {
-        if (g_krow >= ROWS) {
-            clear();
-            refresh_console();
-            g_krow = 1;
-            g_kcol = 1;
-        }
-
         sleep(INPUT_DELAY);
-        g_kcol = 1;
-        mvputc(g_krow, g_kcol++, '>');
-
-        char *cmd = (char *)malloc(CMD_BUF * sizeof(char));
-        size_t input_ticks = INPUT_BUF_TICKS;
-        int i = 0;
-        while (TRUE) {
-            sleep(INPUT_DELAY);
-            char c = getchar();
-
-            if (c == '\t' || c == '\b' || (int)c == 15 || (int)c == 14)
-                continue;
-
-            if (i > 0 && c == cmd[i - 1]) {
-                if (input_ticks > 0) {
-                    input_ticks--;
-                    continue;
-                }
-                else
-                    input_ticks = INPUT_BUF_TICKS;
-            } else
-                input_ticks = INPUT_BUF_TICKS;
-
-            if (c == '\n') {
-                g_krow++;
-                break;
-            } else {
-                cmd[i++] = c;
-                mvputc(g_krow, g_kcol++, c);
-            }
-        }
-        mvsystem(g_krow++, 1, cmd);
-        free(cmd);
+        getchar();
     }
+
+    free(kernel); // should never happen
 }
