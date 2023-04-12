@@ -14,14 +14,14 @@ enum BoxChars
 	BOX_SIDE_BORDER = 186
 };
 
-box_t *init_box(char *title, uint8_t beg_row, uint8_t beg_col, uint8_t rows, uint8_t cols, uint8_t colorscheme[8], int title_menu) {
+box_t *init_box(char *title, uint8_t beg_row, uint8_t beg_col, uint8_t rows, uint8_t cols, uint8_t colorscheme[10], int title_menu) {
     box_t *box = (box_t *)malloc(sizeof(box_t));
     box->title = title;
     box->beg_row = beg_row;
     box->beg_col = beg_col;
     box->rows = rows;
     box->cols = cols;
-    memcpy(box->colorscheme, colorscheme, (8 * sizeof(uint8_t)));
+    memcpy(box->colorscheme, colorscheme, (10 * sizeof(uint8_t)));
     box->title_menu = title_menu;
     return box;
 }
@@ -68,12 +68,13 @@ void refresh_box(box_t *box) {
     for (uint8_t i = 0; i < box->cols; i++)
         mvputc(box->beg_row, box->beg_col + i, ' ');
 
+    set_color(box->colorscheme[8], box->colorscheme[9]);
+    mvputs(box->beg_row, box->beg_col + box->cols - 3, "[X]");
+
     if (box->title_menu == TRUE) {
         char title_menu[] = "File  Edit  View";
-        mvputs(box->beg_row, box->beg_col + 1, title_menu);
+        mvputs(box->beg_row, box->beg_col, title_menu);
     }
-
-    mvputs(box->beg_row, box->beg_col + box->cols - 3, "[X]");
 
     set_color(box->colorscheme[0], box->colorscheme[1]);
     mvputs(box->beg_row, box->beg_col + ((box->cols / 2) - (strlen(box->title) / 2)), box->title);
@@ -94,4 +95,12 @@ void box_addstr(box_t *box, uint8_t row, uint8_t col, char *str) {
         }
         mvputc(cur_row, cur_col++, str[i]);
     }
+}
+
+void del_box(box_t *box) {
+    for (uint8_t row = 0; row < box->rows; row++) {
+        for (uint8_t col = 0; col < box->cols; col++)
+            mvputc(box->beg_row + row, box->beg_col + col, ' ');
+    }
+    free(box);
 }
