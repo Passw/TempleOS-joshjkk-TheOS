@@ -1,95 +1,73 @@
 #include "lib/include/stdio.h"
 #include "lib/include/stdlib.h"
-#include "lib/include/string.h"
 #include "lib/include/stdint.h"
+#include "lib/include/string.h"
 #include "lib/include/input.h"
 #include "lib/include/time.h"
 #include "lib/include/graphics.h"
 
 #define VERSION "0.2.1-prerelease1"
 
-extern int shift_pressed;
-extern int ctrl_pressed;
+void welcome() {
+    const uint8_t rows = 12;
+    const uint8_t cols = 40;
 
-uint8_t colorscheme[10] = {
-    COLOR_WHITE, COLOR_BLACK,
-    COLOR_WHITE, COLOR_BLUE,
-    COLOR_BLACK, COLOR_LIGHT_GRAY,
-    COLOR_BLACK, COLOR_LIGHT_GRAY,
-    COLOR_WHITE, COLOR_BLUE
-};
+    box_t *wel_box = init_box("Welcome", (ROWS / 2) - (rows / 2), (COLS / 2) - (cols / 2), rows, cols);
+    refresh_box(wel_box);
 
-char title[32];
+    char msg[] = "Welcome TheOS, an open source 64-bit operating system built by joshjkk@github. Use arrow keys for navigation, and the enter key for selecting entries.";
 
-box_t *init_immortal() {
-
-    box_t *immortal = init_box("Immortal", 0, 0, ROWS, COLS, colorscheme, TRUE);
-    refresh_box(immortal);
-
-    /* get rid of [x] */
-    set_color(colorscheme[2], colorscheme[3]);
-    mvputs(immortal->beg_row, immortal->beg_col + immortal->cols - 3, "   ");
-
-    return immortal;
-}
-
-void update_immortal(box_t *immortal) {
-    set_color(COLOR_MAGENTA, colorscheme[7]);
-    box_addstr(immortal, 0, (immortal->cols / 2) - (strlen(title) / 2), title);
-
-    /*
-    box_t *status = init_box("Status", 2, 2, 10, COLS - 4, colorscheme, FALSE);
-    refresh_box(status);
-    char msg[] = "This is the status box.";
-    box_addstr(status, 0, 0, msg);
-
-    free(status);
-    */
-}
-
-box_t *init_welcome(uint8_t beg_row, uint8_t beg_col, uint8_t rows, uint8_t cols) {
-    box_t *welcome = init_box("Welcome", beg_row, beg_col, rows, cols, colorscheme, FALSE);
-    char welcome_msg[] = "Welcome to the 64-bit Theos Operating System. It is still in very early stages of development, so there isn't much to do right now. Despite that, I hope you're still impressed, and I hope you choose to stick around.";
-
-    refresh_box(welcome);
-
-    set_color(colorscheme[6], colorscheme[7]);
-    box_addstr(welcome, 0, 0, welcome_msg);
+    set_color(wel_box->colorscheme.content.fore, wel_box->colorscheme.content.back);
+    box_addstr(wel_box, 0, 0, msg);
 
     set_color(COLOR_WHITE, COLOR_RED);
-    mvputs(welcome->beg_row + welcome->rows - 1, welcome->beg_col + ((welcome->cols / 2) - (strlen("<OK>") / 2)), "<OK>");
+    mvputs(LAST_ROW(wel_box), wel_box->beg_col + ((wel_box->cols / 2) - (strlen("<OK>") / 2)), "<OK>");
 
-    return welcome;
+    while (TRUE) {
+        sleep(INPUT_DELAY);
+        char c = getchar();
+        switch (c) {
+            case CH_ENTER: goto stop; free(wel_box); return;
+            default: break;
+        }
+    }
+stop:
+    /* how come this works but fill() doesn't???? */
+    set_color(wel_box->colorscheme.content.fore, wel_box->colorscheme.content.back);
+    for (uint8_t row = 0; row < wel_box->rows; row++) {
+        for (uint8_t col = 0; col < wel_box->cols; col++)
+            mvputc(wel_box->beg_row + row, wel_box->beg_col + col, ' ');
+    }
 }
 
 void kernel_main() {
     clear();
 
+    box_t *immortal = init_box("Immortal", 0, 0, ROWS, COLS);
+    refresh_box(immortal);
+    set_color(immortal->colorscheme.title_border.fore, immortal->colorscheme.title_border.back);
+    mvputs(immortal->beg_row, LAST_COL(immortal) - 2, "   "); /* remove [x] */
+
+    char title[32];
     sprintf(title, "TheOS v%s", VERSION);
 
-    box_t *immortal = init_immortal();
-    update_immortal(immortal);
+    set_color(COLOR_MAGENTA, immortal->colorscheme.content.back);
+    box_addstr(immortal, 0, (immortal->cols / 2) - (strlen(title) / 2), title);
 
-    int welcoming = TRUE;
+    char msg[] = "Not much here at the moment :/";
+
+    int welcomed = FALSE;
 
     while (TRUE) {
-        if (welcoming == TRUE) {
-            box_t *welcome = init_welcome((ROWS / 2) - (10 / 2), (COLS / 2) - (40 / 2), ROWS / 2, COLS / 2);
-            while (TRUE) {
-                sleep(INPUT_DELAY);
-                int key = getchar();
-                switch (key) {
-                    case CH_ENTER: welcoming = FALSE; set_color(colorscheme[6], colorscheme[7]);  del_box(welcome); break;
-                    default: break;
-                }
-            }
+        if (!welcomed) {
+            welcome();
+            welcomed = TRUE;
         }
 
+        set_color(immortal->colorscheme.content.fore, immortal->colorscheme.content.back);
+        box_addstr(immortal, immortal->rows / 2, (immortal->cols / 2) - (strlen(msg) / 2), msg);
 
         sleep(INPUT_DELAY);
-        char key = getchar();
-        switch (key) {
-            default: break;
-        }
+        getchar();
     }
 }
