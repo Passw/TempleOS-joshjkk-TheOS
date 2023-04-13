@@ -28,9 +28,7 @@
 
 **Disclaimer: This operating system is still in very early stages of development. Please don't use this until a stable release is published.**
 
-The 64-bit Theos Operating System *(TheOS)* is an operating system tailored towards tinkerers who want complete control over their hardware.
-
-It doesn't have much use at the moment, but eventually it will have many many uses, such as code editing, internet exploring, game playing and so on. TheOS is built with modularity in mind, TheOS is highly extensible and easy to customize to your preffered style.
+The 64-bit Theos Operating System was made because I want my own operating system, that's all. No unique backstory, I just want an operating system.
 
 ## Features
 
