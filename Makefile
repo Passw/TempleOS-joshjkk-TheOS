@@ -3,9 +3,6 @@ OUT = TheOS
 KERNEL_SOURCES := src/kernel/main.c
 KERNEL_OBJECTS := $(patsubst src/kernel/main.c, build/kernel/main.o, $(KERNEL_SOURCES))
 
-COMPILER_SOURCES := $(shell find src/compiler -name *.c)
-COMPILER_OBJECTS := $(patsubst src/compiler/%.c, build/compiler/%.o, $(COMPILER_SOURCES))
-
 x86_64_C_SOURCES := $(shell find src/kernel/lib -name *.c)
 x86_64_C_OBJECTS := $(patsubst src/kernel/lib/%.c, build/lib/%.o, $(x86_64_C_SOURCES))
 
@@ -21,10 +18,6 @@ $(KERNEL_OBJECTS): build/kernel/%.o : src/kernel/%.c
 	mkdir -p $(dir $@) && \
 	gcc $(INCLUDES) -c $(CFLAGS) $(patsubst build/kernel/%.o, src/kernel/%.c, $@) -o $@
 
-$(COMPILER_OBJECTS): build/compiler/%.o : src/compiler/%.c
-	mkdir -p $(dir $@) && \
-	gcc $(INCLUDES) -c $(CFLAGS) $(patsubst build/compiler/%.o, src/compiler/%.c, $@) -o $@
-
 $(x86_64_C_OBJECTS): build/%.o : src/kernel/%.c
 	mkdir -p $(dir $@) && \
 	gcc $(INCLUDES) -c $(CFLAGS) $(patsubst build/%.o, src/kernel/%.c, $@) -o $@
@@ -34,8 +27,8 @@ $(x86_64_ASM_OBJECTS): build/%.o : src/%.asm
 	nasm -f elf64 $(patsubst build/%.o, src/%.asm, $@) -o $@
 
 .PHONY: debian
-debian: $(KERNEL_OBJECTS) $(COMPILER_OBJECTS) $(x86_64_OBJECTS)
+debian: $(KERNEL_OBJECTS) $(x86_64_OBJECTS)
 	mkdir -p dist && \
-	ld -n -o dist/kernel.bin -T targets/linker.ld $(KERNEL_OBJECTS) $(COMPILER_OBJECTS) $(x86_64_OBJECTS) && \
+	ld -n -o dist/kernel.bin -T targets/linker.ld $(KERNEL_OBJECTS) $(x86_64_OBJECTS) && \
 	cp dist/kernel.bin targets/iso/boot/kernel.bin && \
 	grub-mkrescue /usr/lib/grub/i386-pc -o dist/$(OUT).iso targets/iso
